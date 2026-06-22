@@ -1,0 +1,31 @@
+// CMS + auth data model. SQLite for local dev; swap the provider to
+// postgresql (Supabase/Neon) for production — the models are portable.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// A user who can log in and edit site content.
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+// Editable content, one row per (section, field). The public site reads
+// these; the admin content editor writes them. Falls back to code defaults
+// when a row is absent (see src/lib/content.ts).
+model Content {
+  section   String
+  field     String
+  value     String
+  updatedAt DateTime @updatedAt
+
+  @@id([section, field])
+}

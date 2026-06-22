@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #f6f3ec;
+  color: #23211c;
+  -webkit-font-smoothing: antialiased;
+}
+
+section {
+  scroll-margin-top: 96px;
+}
+
+/* Range slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 7px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, rgba(213, 176, 68, 0.28), rgba(25, 55, 45, 0.12));
+  cursor: pointer;
+  outline: none;
+}
+input[type="range"]:focus-visible {
+  outline: 2px solid #d5b044;
+  outline-offset: 8px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #d5b044;
+  border: 5px solid #19372d;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(25, 55, 45, 0.22);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #d5b044;
+  border: 5px solid #19372d;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(25, 55, 45, 0.22);
+}
+input[type="range"]::-moz-range-track {
+  height: 7px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, rgba(213, 176, 68, 0.28), rgba(25, 55, 45, 0.12));
+}
+
+/* Striped placeholder fills used for "photo" panels until real photography lands */
+.placeholder-dark {
+  background: repeating-linear-gradient(
+    135deg,
+    #1f4035,
+    #1f4035 13px,
+    #234539 13px,
+    #234539 26px
+  );
+}
+.placeholder-cream {
+  background: repeating-linear-gradient(
+    135deg,
+    #e7e2d6,
+    #e7e2d6 13px,
+    #efebe1 13px,
+    #efebe1 26px
+  );
+}
+.placeholder-light {
+  background: repeating-linear-gradient(
+    135deg,
+    #eef0e8,
+    #eef0e8 13px,
+    #f5f6f0 13px,
+    #f5f6f0 26px
+  );
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
