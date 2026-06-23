@@ -22,6 +22,61 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:6px;border-radi
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#D5B044;border:4px solid #19372D;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.2);}
 input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:#D5B044;border:4px solid #19372D;cursor:pointer;}
 section{scroll-margin-top:96px;}
+.hero-badge{position:relative;display:inline-flex;max-width:100%;flex-wrap:wrap;align-items:center;gap:6px;overflow:hidden;font-size:13px;font-weight:600;line-height:1;color:rgba(255,255,255,0.86);border:1px solid rgba(213,176,68,0.25);background:rgba(255,255,255,0.06);padding:6px;border-radius:99px;margin-bottom:30px;box-shadow:0 18px 45px -38px rgba(0,0,0,0.8);backdrop-filter:blur(12px);}
+.hero-badge span{position:relative;z-index:1;border-radius:99px;padding:8px 12px;transition:color .35s ease;}
+.hero-badge span:first-of-type{color:#19372D;padding-left:24px;}
+.hero-badge-highlight{position:absolute;z-index:0;top:6px;left:6px;height:32px;width:136px;border-radius:99px;background:#D5B044;box-shadow:0 12px 28px -16px rgba(213,176,68,0.9);animation:hero-badge-slide 9s ease-in-out infinite;}
+.hero-badge-highlight:after{content:"";position:absolute;left:12px;top:50%;width:6px;height:6px;border-radius:999px;background:#19372D;transform:translateY(-50%);}
+.hero-badge:hover .hero-badge-highlight{animation:none;}
+.hero-badge:has(span:nth-of-type(1):hover) .hero-badge-highlight{transform:translateX(0);width:136px;}
+.hero-badge:has(span:nth-of-type(2):hover) .hero-badge-highlight{transform:translateX(143px);width:62px;}
+.hero-badge:has(span:nth-of-type(3):hover) .hero-badge-highlight{transform:translateX(212px);width:78px;}
+.hero-badge:has(span:nth-of-type(4):hover) .hero-badge-highlight{transform:translateX(297px);width:104px;}
+.hero-badge:has(span:nth-of-type(5):hover) .hero-badge-highlight{transform:translateX(408px);width:146px;}
+.hero-badge span:hover{color:#19372D;}
+@keyframes hero-badge-slide{
+  0%,14%{transform:translateX(0);width:136px;}
+  20%,34%{transform:translateX(143px);width:62px;}
+  40%,54%{transform:translateX(212px);width:78px;}
+  60%,74%{transform:translateX(297px);width:104px;}
+  80%,94%{transform:translateX(408px);width:146px;}
+  100%{transform:translateX(0);width:136px;}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero-badge-highlight{animation:none;}
+}
+@media (max-width:760px){
+  body{overflow-x:hidden;}
+  section{scroll-margin-top:72px;}
+  header>div{height:64px!important;padding:0 20px!important;gap:16px!important;}
+  header nav{display:none!important;}
+  header img{height:24px!important;}
+  header a[href="#contact"]{font-size:14px!important;padding:10px 16px!important;border-radius:9px!important;}
+  #top>div:first-child{display:none!important;}
+  #top>div:nth-child(2){display:grid!important;grid-template-columns:1fr!important;gap:40px!important;padding:56px 20px 64px!important;}
+  #top>div:nth-child(2)>div:first-child>div:first-child{max-width:100%!important;white-space:normal!important;align-items:center!important;line-height:1!important;font-size:13px!important;letter-spacing:0!important;border-radius:14px!important;margin-bottom:24px!important;}
+  .hero-badge-highlight{display:none;}
+  .hero-badge span:first-of-type{background:#D5B044;}
+  #top h1{font-size:46px!important;line-height:1.02!important;letter-spacing:0!important;margin-bottom:20px!important;}
+  #top p{font-size:17px!important;line-height:1.58!important;max-width:none!important;margin-bottom:28px!important;}
+  #top h1+ p + div{display:grid!important;gap:12px!important;}
+  #top h1+ p + div a{display:block!important;width:100%!important;text-align:center!important;padding:16px 20px!important;}
+  #top h1+ p + div + div{align-items:flex-start!important;gap:12px!important;margin-top:32px!important;flex-direction:column!important;}
+  #top h1+ p + div + div>div:nth-child(2){display:none!important;}
+  #top>div:nth-child(2)>div:last-child{height:220px!important;border-radius:14px!important;padding:20px!important;}
+  [style*="grid-template-columns:0.9fr 1.1fr"],
+  [style*="grid-template-columns:1.15fr 1fr"],
+  [style*="grid-template-columns:1fr 384px"],
+  [style*="grid-template-columns:repeat(3,1fr)"],
+  [style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important;}
+  [style*="padding:120px 32px"],
+  [style*="padding:110px 32px"]{padding:72px 20px!important;}
+  [style*="padding:44px"]{padding:28px 20px!important;}
+}
+@media (max-width:380px){
+  #top h1{font-size:42px!important;}
+  header a[href="#contact"]{padding:10px 13px!important;}
+}
 </style>
 </helmet>
 
@@ -48,7 +103,7 @@ section{scroll-margin-top:96px;}
     <div style="position:absolute;top:-20%;right:-10%;width:55%;height:120%;background:radial-gradient(circle at 60% 40%,rgba(213,176,68,0.16),transparent 60%);pointer-events:none;"></div>
     <div style="max-width:1240px;margin:0 auto;padding:96px 32px 104px;display:grid;grid-template-columns:1.05fr 0.95fr;gap:64px;align-items:center;position:relative;">
       <div>
-        <div style="display:inline-flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:12.5px;letter-spacing:0.14em;text-transform:uppercase;color:#D5B044;border:1px solid rgba(213,176,68,0.35);padding:8px 14px;border-radius:99px;margin-bottom:30px;">Solar · Battery · EV — Kent &amp; the South East</div>
+        <div class="hero-badge"><i class="hero-badge-highlight"></i><span>Clean energy</span><span>Solar</span><span>Battery</span><span>EV charging</span><span>Kent &amp; South East</span></div>
         <h1 style="font-family:'IvyJournal',serif;font-weight:600;font-size:62px;line-height:1.05;color:#fff;margin:0 0 24px;letter-spacing:-0.01em;text-wrap:balance;">Clean energy,<br>expertly installed.</h1>
         <p style="font-size:19px;line-height:1.6;color:rgba(255,255,255,0.78);max-width:480px;margin:0 0 36px;">Eden Electrical designs and fits solar panels, battery storage and EV charging across Kent &amp; the South East — MCS-certified work, honest advice and a price you can see up front.</p>
         <div style="display:flex;gap:14px;flex-wrap:wrap;">
@@ -426,10 +481,10 @@ class Component extends DCLogic {
     view: 'site',
     openService: 0,
     calcTab: (this.props && this.props.defaultCalcTab) || 'solar',
-    solarBeds: 1, solarOrient: 0, solarBill: 1400,
-    batteryCap: 10, batteryHasSolar: true,
-    evPower: 0, evMount: 0, evSmart: true, evLongRun: false,
-    bSolar: true, bBattery: true, bEv: false,
+    solarBeds: 0, solarOrient: 0, solarBill: 400,
+    batteryCap: 5, batteryHasSolar: false,
+    evPower: 0, evMount: 0, evSmart: false, evLongRun: false,
+    bSolar: false, bBattery: false, bEv: false,
     adminSection: 0,
     toast: ''
   };

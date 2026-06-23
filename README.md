@@ -20,9 +20,9 @@ libraries. If no codebase exists yet, a sensible stack is:
 - **Auth** for the client login (NextAuth / Supabase Auth / Clerk)
 - **A form/email handler** for the contact form (Resend / a serverless function)
 
-`Eden Electrical (standalone preview).html` opens in any browser to view the design (no server
-needed). `Eden Electrical.dc.html` is the editable source prototype but requires the original
-authoring environment to run — use it for reference, not as a build target.
+`design/Eden Electrical (standalone preview).html` opens in any browser to view the design (no
+server needed). `design/Eden Electrical.dc.html` is the editable source prototype but requires the
+original authoring environment to run — use it for reference, not as a build target.
 
 ## Fidelity
 **High-fidelity.** Final brand colours, typography, spacing, copy, and interactions are all
@@ -214,8 +214,8 @@ server-side.
   is supplying real photos: hero install shot, team/van, one per service, etc.
 
 ## Files in this bundle
-- `Eden Electrical (standalone preview).html` — open in any browser to view the full design.
-- `Eden Electrical.dc.html` — editable source prototype (needs original authoring runtime).
+- `design/Eden Electrical (standalone preview).html` — open in any browser to view the full design.
+- `design/Eden Electrical.dc.html` — editable source prototype (needs original authoring runtime).
 - `assets/` — logo variants + IvyJournal font files.
 
 ## Notes for production

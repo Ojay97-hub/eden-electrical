@@ -1,5 +1,13 @@
 "use client";
 
+import {
+  BatteryCharging,
+  Cable,
+  PackagePlus,
+  RotateCcw,
+  Sun,
+  type LucideIcon,
+} from "lucide-react";
 import { useState } from "react";
 import {
   solar,
@@ -19,12 +27,31 @@ import {
 
 type Tab = "solar" | "battery" | "ev" | "bundle";
 
-const TABS: { key: Tab; label: string }[] = [
-  { key: "solar", label: "Solar Panels" },
-  { key: "battery", label: "Battery Storage" },
-  { key: "ev", label: "EV Charging" },
-  { key: "bundle", label: "Bundle & Save" },
+const TABS: { key: Tab; label: string; icon: LucideIcon }[] = [
+  { key: "solar", label: "Solar Panels", icon: Sun },
+  { key: "battery", label: "Battery Storage", icon: BatteryCharging },
+  { key: "ev", label: "EV Charging", icon: Cable },
+  { key: "bundle", label: "Bundle & Save", icon: PackagePlus },
 ];
+
+const CARD_HEADERS: Record<Tab, { title: string; desc: string }> = {
+  solar: {
+    title: "Solar",
+    desc: "Size a rooftop system around your home and roof position.",
+  },
+  battery: {
+    title: "Battery",
+    desc: "Estimate storage capacity and whether it pairs with solar.",
+  },
+  ev: {
+    title: "EV charging",
+    desc: "Choose charger power, cable type and installation extras.",
+  },
+  bundle: {
+    title: "Bundle",
+    desc: "Combine services and see the package estimate update.",
+  },
+};
 
 // Decorative background photo per tab. Each crossfades in when its tab is active.
 const TAB_BACKGROUNDS: Record<Tab, string> = {
@@ -34,19 +61,19 @@ const TAB_BACKGROUNDS: Record<Tab, string> = {
   bundle: "/assets/calc-bundle.jpg",
 };
 
-const DEFAULT_CALCULATOR_STATE = {
+const MIN_CALCULATOR_STATE = {
   tab: "solar" as Tab,
-  beds: 1,
+  beds: 0,
   orient: 0,
-  bill: 1400,
-  cap: 10,
-  hasSolar: true,
+  bill: 400,
+  cap: 5,
+  hasSolar: false,
   evPower: 0,
   evMount: 0,
-  evSmart: true,
+  evSmart: false,
   evLongRun: false,
-  bSolar: true,
-  bBattery: true,
+  bSolar: false,
+  bBattery: false,
   bEv: false,
 };
 
@@ -129,28 +156,50 @@ function Label({ children }: { children: React.ReactNode }) {
   );
 }
 
+function CardHeader({ tab }: { tab: Tab }) {
+  const tabConfig = TABS.find((item) => item.key === tab) ?? TABS[0];
+  const header = CARD_HEADERS[tab];
+  const Icon = tabConfig.icon;
+
+  return (
+    <div className="mb-8 flex items-start gap-3 border-b border-primary/[0.1] pb-6 sm:mb-10">
+      <span className="flex h-11 w-11 flex-none items-center justify-center rounded-[12px] bg-primary text-gold-light shadow-[0_18px_36px_-30px_rgba(25,55,45,0.95)]">
+        <Icon strokeWidth={2.1} className="h-5 w-5" aria-hidden />
+      </span>
+      <div className="min-w-0">
+        <div className="font-display text-[30px] font-semibold leading-none text-primary">
+          {header.title}
+        </div>
+        <p className="m-0 mt-2 max-w-[520px] text-[14.5px] leading-6 text-muted">
+          {header.desc}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export function Calculator() {
-  const [tab, setTab] = useState<Tab>(DEFAULT_CALCULATOR_STATE.tab);
+  const [tab, setTab] = useState<Tab>(MIN_CALCULATOR_STATE.tab);
 
   // Solar state
-  const [beds, setBeds] = useState(DEFAULT_CALCULATOR_STATE.beds); // default "3 bed"
-  const [orient, setOrient] = useState(DEFAULT_CALCULATOR_STATE.orient); // South
-  const [bill, setBill] = useState(DEFAULT_CALCULATOR_STATE.bill);
+  const [beds, setBeds] = useState(MIN_CALCULATOR_STATE.beds);
+  const [orient, setOrient] = useState(MIN_CALCULATOR_STATE.orient);
+  const [bill, setBill] = useState(MIN_CALCULATOR_STATE.bill);
 
   // Battery state
-  const [cap, setCap] = useState(DEFAULT_CALCULATOR_STATE.cap);
-  const [hasSolar, setHasSolar] = useState(DEFAULT_CALCULATOR_STATE.hasSolar);
+  const [cap, setCap] = useState(MIN_CALCULATOR_STATE.cap);
+  const [hasSolar, setHasSolar] = useState(MIN_CALCULATOR_STATE.hasSolar);
 
   // EV state
-  const [evPower, setEvPower] = useState(DEFAULT_CALCULATOR_STATE.evPower);
-  const [evMount, setEvMount] = useState(DEFAULT_CALCULATOR_STATE.evMount);
-  const [evSmart, setEvSmart] = useState(DEFAULT_CALCULATOR_STATE.evSmart);
-  const [evLongRun, setEvLongRun] = useState(DEFAULT_CALCULATOR_STATE.evLongRun);
+  const [evPower, setEvPower] = useState(MIN_CALCULATOR_STATE.evPower);
+  const [evMount, setEvMount] = useState(MIN_CALCULATOR_STATE.evMount);
+  const [evSmart, setEvSmart] = useState(MIN_CALCULATOR_STATE.evSmart);
+  const [evLongRun, setEvLongRun] = useState(MIN_CALCULATOR_STATE.evLongRun);
 
   // Bundle state
-  const [bSolar, setBSolar] = useState(DEFAULT_CALCULATOR_STATE.bSolar);
-  const [bBattery, setBBattery] = useState(DEFAULT_CALCULATOR_STATE.bBattery);
-  const [bEv, setBEv] = useState(DEFAULT_CALCULATOR_STATE.bEv);
+  const [bSolar, setBSolar] = useState(MIN_CALCULATOR_STATE.bSolar);
+  const [bBattery, setBBattery] = useState(MIN_CALCULATOR_STATE.bBattery);
+  const [bEv, setBEv] = useState(MIN_CALCULATOR_STATE.bEv);
 
   const solarInput = { beds, orient, bill };
   const batteryInput = { cap, hasSolar };
@@ -172,19 +221,19 @@ export function Calculator() {
     });
 
   function resetCalculator() {
-    setTab(DEFAULT_CALCULATOR_STATE.tab);
-    setBeds(DEFAULT_CALCULATOR_STATE.beds);
-    setOrient(DEFAULT_CALCULATOR_STATE.orient);
-    setBill(DEFAULT_CALCULATOR_STATE.bill);
-    setCap(DEFAULT_CALCULATOR_STATE.cap);
-    setHasSolar(DEFAULT_CALCULATOR_STATE.hasSolar);
-    setEvPower(DEFAULT_CALCULATOR_STATE.evPower);
-    setEvMount(DEFAULT_CALCULATOR_STATE.evMount);
-    setEvSmart(DEFAULT_CALCULATOR_STATE.evSmart);
-    setEvLongRun(DEFAULT_CALCULATOR_STATE.evLongRun);
-    setBSolar(DEFAULT_CALCULATOR_STATE.bSolar);
-    setBBattery(DEFAULT_CALCULATOR_STATE.bBattery);
-    setBEv(DEFAULT_CALCULATOR_STATE.bEv);
+    setTab(MIN_CALCULATOR_STATE.tab);
+    setBeds(MIN_CALCULATOR_STATE.beds);
+    setOrient(MIN_CALCULATOR_STATE.orient);
+    setBill(MIN_CALCULATOR_STATE.bill);
+    setCap(MIN_CALCULATOR_STATE.cap);
+    setHasSolar(MIN_CALCULATOR_STATE.hasSolar);
+    setEvPower(MIN_CALCULATOR_STATE.evPower);
+    setEvMount(MIN_CALCULATOR_STATE.evMount);
+    setEvSmart(MIN_CALCULATOR_STATE.evSmart);
+    setEvLongRun(MIN_CALCULATOR_STATE.evLongRun);
+    setBSolar(MIN_CALCULATOR_STATE.bSolar);
+    setBBattery(MIN_CALCULATOR_STATE.bBattery);
+    setBEv(MIN_CALCULATOR_STATE.bEv);
   }
 
   function handleContactClick() {
@@ -246,18 +295,29 @@ export function Calculator() {
           <div className="grid w-full max-w-[720px] grid-cols-2 gap-1 rounded-[16px] border border-white/[0.28] bg-deep/75 p-1 shadow-[0_22px_50px_-40px_rgba(0,0,0,0.75)] backdrop-blur-xl sm:grid-cols-4">
             {TABS.map((t) => {
               const on = tab === t.key;
+              const Icon = t.icon;
               return (
                 <button
                   type="button"
                   key={t.key}
                   onClick={() => setTab(t.key)}
-                  className={`min-h-[48px] rounded-[12px] border-none px-3 py-3 text-[14px] font-semibold leading-[1.2] transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold ${
+                  className={`flex min-h-[56px] min-w-0 items-center justify-center gap-2 rounded-[12px] border-none px-2.5 py-3 text-[13.5px] font-semibold leading-[1.2] transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold sm:px-3 sm:text-[14px] ${
                     on
                       ? "bg-white text-primary shadow-[0_12px_28px_-24px_rgba(0,0,0,0.75)]"
                       : "bg-transparent text-white/[0.88] hover:bg-white/[0.1] hover:text-white"
                   }`}
                 >
-                  {t.label}
+                  <span
+                    className={`flex h-8 w-8 flex-none items-center justify-center rounded-[10px] transition-colors ${
+                      on
+                        ? "bg-gold/18 text-gold-ink"
+                        : "bg-white/[0.08] text-gold-light/80"
+                    }`}
+                    aria-hidden
+                  >
+                    <Icon strokeWidth={2.1} className="h-[18px] w-[18px]" />
+                  </span>
+                  <span className="min-w-0">{t.label}</span>
                 </button>
               );
             })}
@@ -265,19 +325,20 @@ export function Calculator() {
           <button
             type="button"
             onClick={resetCalculator}
-            aria-label="Reset calculator to default values"
-            title="Reset calculator"
+            aria-label="Reset calculator to the lowest values"
+            title="Reset to lowest values"
             className="flex h-12 w-12 flex-none items-center justify-center rounded-full border border-white/[0.28] bg-deep/75 text-[24px] font-semibold leading-none text-white/[0.9] shadow-[0_18px_40px_-32px_rgba(0,0,0,0.75)] transition hover:bg-white hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
           >
-            ↻
+            <RotateCcw strokeWidth={2.4} className="h-5 w-5" aria-hidden />
           </button>
         </div>
 
         {/* card */}
         <div className="grid grid-cols-1 overflow-hidden rounded-[22px] border border-white/[0.24] bg-field/95 shadow-[0_38px_90px_-52px_rgba(0,0,0,0.75)] backdrop-blur-xl lg:grid-cols-[minmax(0,1fr)_390px]">
-          <div className="flex p-6 sm:p-8 lg:min-h-[560px] lg:p-11">
+          <div className="p-6 sm:p-8 lg:min-h-[560px] lg:p-11">
+            <CardHeader tab={tab} />
             {tab === "solar" && (
-              <div className="flex w-full flex-1 flex-col justify-center gap-8 sm:gap-10 lg:gap-12">
+              <div className="flex w-full flex-1 flex-col gap-8 sm:gap-10 lg:gap-12">
                 <div className="w-full">
                   <Label>Property size</Label>
                   <Segmented
@@ -317,7 +378,7 @@ export function Calculator() {
             )}
 
             {tab === "battery" && (
-              <div className="flex w-full flex-1 flex-col justify-center gap-8 sm:gap-10 lg:gap-12">
+              <div className="flex w-full flex-1 flex-col gap-8 sm:gap-10 lg:gap-12">
                 <div className="w-full rounded-[16px] border border-primary/[0.1] bg-white p-5 sm:p-6">
                   <div className="mb-[14px] flex items-baseline justify-between gap-4">
                     <span className="font-semibold text-[15px] text-primary">
@@ -354,7 +415,7 @@ export function Calculator() {
             )}
 
             {tab === "ev" && (
-              <div className="flex w-full flex-1 flex-col justify-center gap-8 sm:gap-10 lg:gap-12">
+              <div className="flex w-full flex-1 flex-col gap-8 sm:gap-10 lg:gap-12">
                 <div className="w-full">
                   <Label>Charger power</Label>
                   <Segmented
@@ -389,7 +450,7 @@ export function Calculator() {
             )}
 
             {tab === "bundle" && (
-              <div className="flex w-full flex-1 flex-col justify-center gap-8 sm:gap-10 lg:gap-12">
+              <div className="flex w-full flex-1 flex-col gap-8 sm:gap-10 lg:gap-12">
                 <div className="w-full">
                   <div className="mb-[6px] text-[15px] font-semibold text-primary">
                     Build your package
