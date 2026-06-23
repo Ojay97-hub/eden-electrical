@@ -6,7 +6,7 @@ import type { SectionContent } from "@/lib/content";
 import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
 
-const HERO_BADGES = ["Clean energy", "Solar", "Battery", "EV charging", "Kent & South East"];
+const HERO_BADGES = ["Clean energy", "Solar", "Battery", "EV charging"];
 
 export function Hero({ content }: { content: SectionContent<"hero"> }) {
   const [activeBadge, setActiveBadge] = useState(0);
@@ -94,13 +94,15 @@ export function Hero({ content }: { content: SectionContent<"hero"> }) {
         <div>
           <div
             ref={badgeRef}
-            className="relative mb-6 inline-flex max-w-full flex-wrap items-center gap-1.5 overflow-hidden rounded-[15px] border border-gold/25 bg-white/[0.06] p-1.5 text-[13px] font-semibold leading-none text-white/86 shadow-[0_18px_45px_-38px_rgba(0,0,0,0.8)] backdrop-blur-md sm:mb-[30px] sm:rounded-full"
-            onMouseEnter={() => setIsHoveringBadge(true)}
-            onMouseLeave={() => setIsHoveringBadge(false)}
+            className="relative mb-6 grid max-w-full grid-cols-2 items-center gap-1 overflow-hidden rounded-[16px] border border-white/[0.22] bg-white/[0.08] p-1 text-[15px] font-semibold leading-none text-cream shadow-[inset_0_1px_0_rgba(255,255,255,0.16),0_18px_45px_-38px_rgba(0,0,0,0.8)] backdrop-blur-xl sm:mb-[30px] sm:inline-flex sm:flex-wrap sm:text-[16px]"
+            onPointerEnter={(event) => {
+              if (event.pointerType === "mouse") setIsHoveringBadge(true);
+            }}
+            onPointerLeave={() => setIsHoveringBadge(false)}
           >
             <span
               aria-hidden
-              className="absolute left-0 top-0 rounded-full bg-gold shadow-[0_12px_28px_-16px_rgba(213,176,68,0.9)] transition-[transform,width,height] duration-500 ease-out after:absolute after:left-3 after:top-1/2 after:h-1.5 after:w-1.5 after:-translate-y-1/2 after:rounded-full after:bg-primary after:content-['']"
+              className="absolute left-0 top-0 rounded-[12px] border border-white/[0.42] bg-white/[0.22] shadow-[inset_0_1px_0_rgba(255,255,255,0.62),inset_0_-18px_32px_rgba(213,176,68,0.18),0_18px_42px_-24px_rgba(0,0,0,0.85)] backdrop-blur-2xl transition-[transform,width,height] duration-500 ease-out"
               style={{
                 width: marker.width,
                 height: marker.height,
@@ -118,11 +120,14 @@ export function Hero({ content }: { content: SectionContent<"hero"> }) {
                   type="button"
                   onMouseEnter={() => setActiveBadge(index)}
                   onFocus={() => setActiveBadge(index)}
-                  onClick={() => setActiveBadge(index)}
-                  className={`relative z-10 flex items-center gap-2 rounded-full px-3 py-2 outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-gold-light/80 focus-visible:ring-offset-2 focus-visible:ring-offset-primary ${
+                  onClick={() => {
+                    setActiveBadge(index);
+                    setIsHoveringBadge(false);
+                  }}
+                  className={`relative z-10 flex min-h-11 items-center justify-center gap-2 rounded-[12px] px-4 py-3 text-center outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-gold-light/80 focus-visible:ring-offset-2 focus-visible:ring-offset-primary sm:min-h-12 sm:px-5 ${
                     active
-                      ? "pl-6 text-primary"
-                      : "text-white/82 hover:text-white"
+                      ? "text-white"
+                      : "text-cream hover:text-white"
                   }`}
                 >
                   {label}
