@@ -1,4 +1,4 @@
-import { PhotoPlaceholder } from "@/components/PhotoPlaceholder";
+/* eslint-disable @next/next/no-img-element */
 import type { SectionContent } from "@/lib/content";
 
 const FEATURES = [
@@ -12,10 +12,10 @@ export function About({ content }: { content: SectionContent<"about"> }) {
   return (
     <section id="about" className="bg-cream">
       <div className="max-w-content mx-auto px-8 py-[120px] grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-[72px] items-center">
-        <PhotoPlaceholder
-          variant="cream"
-          caption="photo — the team / van / completed job"
-          className="h-[480px] rounded-[18px] p-6"
+        <img
+          src="/assets/webp-eden-electrical/solar-panels-flat-roof-garden.jpg"
+          alt="Completed solar panel installation on a flat roof"
+          className="h-[480px] w-full object-cover rounded-[18px]"
         />
         <div>
           <div className="font-mono text-[12.5px] tracking-eyebrow uppercase text-gold-ink mb-[18px]">

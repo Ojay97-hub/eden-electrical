@@ -60,7 +60,7 @@ async function sendViaResend(data: {
   message: string;
   estimate: string;
 }) {
-  const to = process.env.CONTACT_TO_EMAIL ?? "hello@edenelectrical.co.uk";
+  const to = process.env.CONTACT_TO_EMAIL ?? "contact@eden-electrical.com";
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -68,7 +68,7 @@ async function sendViaResend(data: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "Eden Electrical <website@edenelectrical.co.uk>",
+      from: "Eden Electrical <contact@eden-electrical.com>",
       to: [to],
       reply_to: data.email || undefined,
       subject: `Website enquiry — ${data.service || "General"}`,

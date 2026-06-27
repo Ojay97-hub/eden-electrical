@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { hanken, plexMono, ivy } from "@/lib/fonts";
+import { inter, poppins, plexMono } from "@/lib/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${hanken.variable} ${plexMono.variable} ${ivy.variable}`}
+      className={`${inter.variable} ${poppins.variable} ${plexMono.variable}`}
     >
       <body className="font-sans bg-cream text-ink antialiased">{children}</body>
     </html>

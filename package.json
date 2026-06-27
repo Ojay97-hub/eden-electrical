@@ -10,6 +10,7 @@
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
+    "db:init": "node scripts/init-dev-db.mjs && prisma db seed",
     "db:reset": "prisma db push --force-reset && tsx prisma/seed.ts",
     "test:calc": "tsx src/lib/calculator.test.ts"
   },

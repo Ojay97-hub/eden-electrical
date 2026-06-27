@@ -10,7 +10,7 @@ export const CONTENT_DEFAULTS = {
     headline: "Clean energy, expertly installed.",
     intro:
       "Eden Electrical designs and fits solar panels, battery storage and EV charging across Kent & the South East — MCS-certified work, honest advice and a price you can see up front.",
-    image: "", // empty → striped photo placeholder
+    image: "/assets/webp-eden-electrical/solar-panels-dramatic-low-angle.webp",
     ctaPrimary: "Try the cost calculator",
     ctaSecondary: "Get a free quote",
   },
@@ -24,7 +24,7 @@ export const CONTENT_DEFAULTS = {
   },
   contact: {
     phone: "01892 000 000",
-    email: "hello@edenelectrical.co.uk",
+    email: "contact@eden-electrical.com",
     coverage: "Kent & the South East",
   },
 } as const;

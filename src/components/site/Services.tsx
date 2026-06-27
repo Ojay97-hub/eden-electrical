@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState } from "react";
@@ -8,6 +9,7 @@ type Service = {
   tag: string;
   blurb: string;
   points: string[];
+  image?: string;
 };
 
 const SERVICES: Service[] = [
@@ -22,6 +24,7 @@ const SERVICES: Service[] = [
       "Smartphone generation monitoring",
       "All DNO & G99 paperwork handled",
     ],
+    image: "/assets/webp-eden-electrical/solar-panels-closeup-sky-reflection-01.webp",
   },
   {
     title: "Battery Storage",
@@ -34,6 +37,7 @@ const SERVICES: Service[] = [
       "Charge on cheap off-peak tariffs",
       "Scalable, modular capacity",
     ],
+    image: "/assets/webp-eden-electrical/foxess-inverter-battery-brick-wall-02.jpg",
   },
   {
     title: "EV Charging",
@@ -58,6 +62,7 @@ const SERVICES: Service[] = [
       "Inverter servicing & fault-finding",
       "Priority callouts",
     ],
+    image: "/assets/webp-eden-electrical/sunsynk-inverter-battery-system.jpg",
   },
 ];
 
@@ -138,12 +143,20 @@ export function Services() {
                           Estimate the cost →
                         </a>
                       </div>
-                      <PhotoPlaceholder
-                        variant="light"
-                        caption={`photo — ${svc.title}`}
-                        className="min-h-[240px] rounded-[14px] p-5"
-                        captionClassName="!text-[11.5px] tracking-[0.06em] !bg-white/80"
-                      />
+                      {svc.image ? (
+                        <img
+                          src={svc.image}
+                          alt={svc.title}
+                          className="min-h-[240px] w-full object-cover rounded-[14px]"
+                        />
+                      ) : (
+                        <PhotoPlaceholder
+                          variant="light"
+                          caption={`photo — ${svc.title}`}
+                          className="min-h-[240px] rounded-[14px] p-5"
+                          captionClassName="!text-[11.5px] tracking-[0.06em] !bg-white/80"
+                        />
+                      )}
                     </div>
                   </div>
                 </div>

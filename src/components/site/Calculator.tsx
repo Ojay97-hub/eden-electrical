@@ -292,7 +292,7 @@ export function Calculator() {
 
         {/* tabs */}
         <div className="mb-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <div className="grid w-full max-w-[720px] grid-cols-2 gap-1 rounded-[16px] border border-white/[0.28] bg-deep/75 p-1 shadow-[0_22px_50px_-40px_rgba(0,0,0,0.75)] backdrop-blur-xl sm:grid-cols-4">
+          <div className="order-2 grid w-full max-w-[720px] grid-cols-2 gap-1 rounded-[16px] border border-white/[0.28] bg-deep/75 p-1 shadow-[0_22px_50px_-40px_rgba(0,0,0,0.75)] backdrop-blur-xl sm:order-1 sm:grid-cols-4">
             {TABS.map((t) => {
               const on = tab === t.key;
               const Icon = t.icon;
@@ -327,7 +327,7 @@ export function Calculator() {
             onClick={resetCalculator}
             aria-label="Reset calculator to the lowest values"
             title="Reset to lowest values"
-            className="flex h-12 w-12 flex-none items-center justify-center rounded-full border border-white/[0.28] bg-deep/75 text-[24px] font-semibold leading-none text-white/[0.9] shadow-[0_18px_40px_-32px_rgba(0,0,0,0.75)] transition hover:bg-white hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+            className="order-1 flex h-12 w-12 flex-none items-center justify-center rounded-full border border-white/[0.28] bg-deep/75 text-[24px] font-semibold leading-none text-white/[0.9] shadow-[0_18px_40px_-32px_rgba(0,0,0,0.75)] transition hover:bg-white hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold sm:order-2"
           >
             <RotateCcw strokeWidth={2.4} className="h-5 w-5" aria-hidden />
           </button>
@@ -516,6 +516,12 @@ export function Calculator() {
               className="mt-auto block rounded-[12px] bg-gold p-4 text-center text-base font-semibold text-primary shadow-[0_18px_34px_-26px_rgba(213,176,68,0.95)] transition hover:brightness-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-light"
             >
               {result.cta}
+            </a>
+            <a
+              href="/quote"
+              className="mt-3 block text-center text-[13.5px] font-semibold text-gold-light underline-offset-2 hover:underline"
+            >
+              Want a fully itemised quote instead? →
             </a>
           </div>
         </div>

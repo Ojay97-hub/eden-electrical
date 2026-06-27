@@ -2,10 +2,11 @@
 import type { SectionContent } from "@/lib/content";
 
 const EXPLORE = [
-  { href: "#about", label: "About" },
-  { href: "#services", label: "Services" },
-  { href: "#calculator", label: "Cost calculator" },
-  { href: "#contact", label: "Contact" },
+  { href: "/#about", label: "About" },
+  { href: "/#services", label: "Services" },
+  { href: "/#calculator", label: "Cost calculator" },
+  { href: "/quote", label: "Get a quote" },
+  { href: "/#contact", label: "Contact" },
 ];
 
 export function Footer({ content }: { content: SectionContent<"contact"> }) {

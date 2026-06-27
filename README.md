@@ -219,8 +219,11 @@ server-side.
 - `assets/` — logo variants + IvyJournal font files.
 
 ## Notes for production
-- Phone `01892 000 000`, email `hello@edenelectrical.co.uk`, area "Kent & the South East",
-  and the accreditation list are **placeholders** — confirm with the client before launch.
+- Phone `01892 000 000`, area "Kent & the South East", and the accreditation list are
+  **placeholders** — confirm with the client before launch. Email is confirmed:
+  `contact@eden-electrical.com`.
+- Resend sending domain (`eden-electrical.com`) still needs verifying in Resend before
+  `RESEND_API_KEY` is set — until then enquiries are just logged to the server console.
 - Calculator constants (£/kWp, £/kWh, generation yield, tariff %, discount) are reasonable UK
   estimates — expose them as config so the client can tune them.
 - Add responsive/mobile layouts: the prototype is desktop-first; collapse the 2-column grids to

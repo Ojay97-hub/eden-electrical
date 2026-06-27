@@ -92,9 +92,53 @@ export function Hero({ content }: { content: SectionContent<"hero"> }) {
       <div className="absolute -top-[20%] -right-[10%] hidden w-[55%] h-[120%] bg-[radial-gradient(circle_at_60%_40%,rgba(213,176,68,0.16),transparent_60%)] pointer-events-none sm:block" />
       <div className="max-w-content mx-auto px-5 pt-14 pb-16 grid grid-cols-1 gap-10 items-center relative sm:px-8 sm:pt-[96px] sm:pb-[104px] lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
         <div>
+          <h1
+            ref={titleRef}
+            aria-label={content.headline}
+            className="m-0 mb-5 font-display text-[40px] font-semibold leading-[1.02] tracking-normal text-white [perspective:900px] min-[420px]:text-[46px] sm:mb-6 sm:text-[62px] sm:leading-[1.05] sm:tracking-tightish text-balance break-words"
+          >
+            {content.headline.split(" ").map((word, index, words) => (
+              <span
+                key={`${word}-${index}`}
+                aria-hidden="true"
+                data-hero-title-word
+                className="inline-block will-change-transform"
+              >
+                {word}
+                {index < words.length - 1 ? "\u00A0" : ""}
+              </span>
+            ))}
+          </h1>
+          <p className="text-[17px] sm:text-[19px] leading-[1.58] sm:leading-[1.6] text-white/[0.78] max-w-[480px] m-0 mb-7 sm:mb-9 break-words">
+            {content.intro}
+          </p>
+          <div className="grid gap-3 sm:flex sm:gap-[14px] sm:flex-wrap">
+            <a
+              href="#calculator"
+              className="bg-gold text-primary font-semibold text-base px-5 py-4 rounded-[10px] text-center hover:brightness-105 transition sm:px-7"
+            >
+              {content.ctaPrimary}
+            </a>
+            <a
+              href="/quote"
+              className="bg-transparent text-gold-light font-semibold text-base px-5 py-4 rounded-[10px] border border-gold-light/40 text-center hover:bg-white/5 transition sm:px-7"
+            >
+              {content.ctaSecondary}
+            </a>
+          </div>
+          <div className="flex items-start gap-3 mt-8 flex-col sm:flex-row sm:items-center sm:gap-6 sm:mt-10 sm:flex-wrap">
+            <div className="flex items-center gap-2">
+              <span className="text-gold text-base tracking-[2px]">★★★★★</span>
+              <span className="text-white/70 text-sm">
+                Rated by Kent homeowners
+              </span>
+            </div>
+            <div className="hidden w-px h-[18px] bg-white/[0.18] sm:block" />
+            <span className="text-white/70 text-sm">MCS · NICEIC · TrustMark</span>
+          </div>
           <div
             ref={badgeRef}
-            className="relative mb-6 grid max-w-full grid-cols-2 items-center gap-1 overflow-hidden rounded-[16px] border border-white/[0.22] bg-white/[0.08] p-1 text-[15px] font-semibold leading-none text-cream shadow-[inset_0_1px_0_rgba(255,255,255,0.16),0_18px_45px_-38px_rgba(0,0,0,0.8)] backdrop-blur-xl sm:mb-[30px] sm:inline-flex sm:flex-wrap sm:text-[16px]"
+            className="relative mt-8 hidden w-full max-w-full items-center gap-1 overflow-hidden rounded-[16px] border border-white/[0.22] bg-white/[0.08] p-1 text-[12px] font-semibold leading-none text-cream shadow-[inset_0_1px_0_rgba(255,255,255,0.16),0_18px_45px_-38px_rgba(0,0,0,0.8)] backdrop-blur-xl sm:mt-10 sm:flex"
             onPointerEnter={(event) => {
               if (event.pointerType === "mouse") setIsHoveringBadge(true);
             }}
@@ -124,7 +168,7 @@ export function Hero({ content }: { content: SectionContent<"hero"> }) {
                     setActiveBadge(index);
                     setIsHoveringBadge(false);
                   }}
-                  className={`relative z-10 flex min-h-11 items-center justify-center gap-2 rounded-[12px] px-4 py-3 text-center outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-gold-light/80 focus-visible:ring-offset-2 focus-visible:ring-offset-primary sm:min-h-12 sm:px-5 ${
+                  className={`relative z-10 flex min-h-11 flex-1 items-center justify-center gap-2 rounded-[12px] px-4 py-3 text-center outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-gold-light/80 focus-visible:ring-offset-2 focus-visible:ring-offset-primary sm:min-h-12 sm:px-5 ${
                     active
                       ? "text-white"
                       : "text-cream hover:text-white"
@@ -134,50 +178,6 @@ export function Hero({ content }: { content: SectionContent<"hero"> }) {
                 </button>
               );
             })}
-          </div>
-          <h1
-            ref={titleRef}
-            aria-label={content.headline}
-            className="m-0 mb-5 font-display text-[40px] font-semibold leading-[1.02] tracking-normal text-white [perspective:900px] min-[420px]:text-[46px] sm:mb-6 sm:text-[62px] sm:leading-[1.05] sm:tracking-tightish text-balance break-words"
-          >
-            {content.headline.split(" ").map((word, index, words) => (
-              <span
-                key={`${word}-${index}`}
-                aria-hidden="true"
-                data-hero-title-word
-                className="inline-block will-change-transform"
-              >
-                {word}
-                {index < words.length - 1 ? "\u00A0" : ""}
-              </span>
-            ))}
-          </h1>
-          <p className="text-[17px] sm:text-[19px] leading-[1.58] sm:leading-[1.6] text-white/[0.78] max-w-[480px] m-0 mb-7 sm:mb-9 break-words">
-            {content.intro}
-          </p>
-          <div className="grid gap-3 sm:flex sm:gap-[14px] sm:flex-wrap">
-            <a
-              href="#calculator"
-              className="bg-gold text-primary font-semibold text-base px-5 py-4 rounded-[10px] text-center hover:brightness-105 transition sm:px-7"
-            >
-              {content.ctaPrimary}
-            </a>
-            <a
-              href="#contact"
-              className="bg-transparent text-gold-light font-semibold text-base px-5 py-4 rounded-[10px] border border-gold-light/40 text-center hover:bg-white/5 transition sm:px-7"
-            >
-              {content.ctaSecondary}
-            </a>
-          </div>
-          <div className="flex items-start gap-3 mt-8 flex-col sm:flex-row sm:items-center sm:gap-6 sm:mt-10 sm:flex-wrap">
-            <div className="flex items-center gap-2">
-              <span className="text-gold text-base tracking-[2px]">★★★★★</span>
-              <span className="text-white/70 text-sm">
-                Rated by Kent homeowners
-              </span>
-            </div>
-            <div className="hidden w-px h-[18px] bg-white/[0.18] sm:block" />
-            <span className="text-white/70 text-sm">MCS · NICEIC · TrustMark</span>
           </div>
         </div>
         {content.image ? (
