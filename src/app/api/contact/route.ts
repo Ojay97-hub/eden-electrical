@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import {
+  canWriteToSanity,
+  createSanityEnquiry,
+} from "@/sanity/lib/writeClient";
 
 const contactSchema = z
   .object({
@@ -32,6 +36,18 @@ export async function POST(req: Request) {
   }
 
   const data = parsed.data;
+
+  if (canWriteToSanity) {
+    try {
+      await createSanityEnquiry(data);
+    } catch (err) {
+      console.error("Sanity enquiry write failed:", err);
+      return NextResponse.json(
+        { error: "Could not save enquiry right now" },
+        { status: 502 }
+      );
+    }
+  }
 
   // Email delivery. Wire a provider (e.g. Resend) here; until a key is set we
   // log the enquiry so nothing is lost in development.

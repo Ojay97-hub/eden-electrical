@@ -6,6 +6,43 @@
  * All figures are INDICATIVE estimates for guidance only.
  */
 
+/**
+ * Shape of the tunable pricing config. `CALC_CONFIG` is the built-in default,
+ * but any function can be passed a different config — the Sanity Studio preview
+ * uses this to price against the editor's draft settings live.
+ */
+export type CalcConfig = {
+  solar: {
+    bedKwp: readonly number[];
+    bedLabels: readonly string[];
+    orientFactor: readonly number[];
+    orientLabels: readonly string[];
+    panelKw: number;
+    costLoPerKwp: number;
+    costHiPerKwp: number;
+    yieldPerKwp: number;
+    tariff: number;
+    billSavingCap: number;
+  };
+  battery: {
+    costLoPerKwh: number;
+    costHiPerKwh: number;
+    savePerKwhSolar: number;
+    savePerKwhNoSolar: number;
+  };
+  ev: {
+    base: readonly number[];
+    powerKw: readonly number[];
+    untetheredAdd: number;
+    smartAdd: number;
+    longRunAdd: number;
+  };
+  bundle: {
+    discountRate: number;
+    discountMinItems: number;
+  };
+};
+
 export const CALC_CONFIG = {
   solar: {
     bedKwp: [3, 4, 5, 6.5], // '1–2 bed', '3 bed', '4 bed', '5+ bed'
@@ -36,7 +73,7 @@ export const CALC_CONFIG = {
     discountRate: 0.08, // when 2+ services selected
     discountMinItems: 2,
   },
-} as const;
+} as const satisfies CalcConfig;
 
 // ---- formatting helpers (README) ----
 export const fmt = (n: number): string =>
@@ -57,8 +94,11 @@ export type CalcResult = {
 // ---- Solar ----
 export type SolarInput = { beds: number; orient: number; bill: number };
 /** Raw numeric figures for a solar config — shared by the solar tab and the bundle. */
-export function solarFigures({ beds, orient, bill }: SolarInput) {
-  const c = CALC_CONFIG.solar;
+export function solarFigures(
+  { beds, orient, bill }: SolarInput,
+  cfg: CalcConfig = CALC_CONFIG
+) {
+  const c = cfg.solar;
   const kwp = c.bedKwp[beds];
   const panels = Math.round(kwp / c.panelKw);
   const gen = Math.round(kwp * c.yieldPerKwp * c.orientFactor[orient]);
@@ -70,9 +110,12 @@ export function solarFigures({ beds, orient, bill }: SolarInput) {
   const costHi = kwp * c.costHiPerKwp;
   return { kwp, panels, gen, save, costLo, costHi };
 }
-export function solar(input: SolarInput): CalcResult {
-  const { kwp, panels, gen, save, costLo, costHi } = solarFigures(input);
-  const payback = (costLo + costHi) / 2 / save;
+export function solar(
+  input: SolarInput,
+  cfg: CalcConfig = CALC_CONFIG
+): CalcResult {
+  const { kwp, panels, gen, save, costLo, costHi } = solarFigures(input, cfg);
+  const payback = save > 0 ? (costLo + costHi) / 2 / save : 0;
   return {
     priceLabel: "Estimated installed cost",
     price: range(costLo, costHi),
@@ -80,7 +123,10 @@ export function solar(input: SolarInput): CalcResult {
       { label: "Recommended system", value: `${kwp} kWp · ~${panels} panels` },
       { label: "Annual generation", value: `${gen.toLocaleString("en-GB")} kWh` },
       { label: "Estimated saving", value: `${fmt(save)} / yr` },
-      { label: "Indicative payback", value: `${payback.toFixed(1)} years` },
+      {
+        label: "Indicative payback",
+        value: payback > 0 ? `${payback.toFixed(1)} years` : "—",
+      },
     ],
     note: "Based on a typical Kent roof at current tariffs. Final price confirmed after a free survey.",
     cta: "Book a free survey",
@@ -90,16 +136,22 @@ export function solar(input: SolarInput): CalcResult {
 // ---- Battery ----
 export type BatteryInput = { cap: number; hasSolar: boolean };
 /** Raw numeric figures for a battery config — shared by the battery tab and the bundle. */
-export function batteryFigures({ cap, hasSolar }: BatteryInput) {
-  const c = CALC_CONFIG.battery;
+export function batteryFigures(
+  { cap, hasSolar }: BatteryInput,
+  cfg: CalcConfig = CALC_CONFIG
+) {
+  const c = cfg.battery;
   const costLo = cap * c.costLoPerKwh;
   const costHi = cap * c.costHiPerKwh;
   const save = hasSolar ? cap * c.savePerKwhSolar : cap * c.savePerKwhNoSolar;
   return { costLo, costHi, save };
 }
-export function battery({ cap, hasSolar }: BatteryInput): CalcResult {
-  const { costLo, costHi, save } = batteryFigures({ cap, hasSolar });
-  const payback = (costLo + costHi) / 2 / save;
+export function battery(
+  { cap, hasSolar }: BatteryInput,
+  cfg: CalcConfig = CALC_CONFIG
+): CalcResult {
+  const { costLo, costHi, save } = batteryFigures({ cap, hasSolar }, cfg);
+  const payback = save > 0 ? (costLo + costHi) / 2 / save : 0;
   return {
     priceLabel: "Estimated installed cost",
     price: range(costLo, costHi),
@@ -107,7 +159,10 @@ export function battery({ cap, hasSolar }: BatteryInput): CalcResult {
       { label: "Usable capacity", value: `${cap} kWh` },
       { label: "Paired with solar", value: hasSolar ? "Yes" : "No" },
       { label: "Estimated saving", value: `${fmt(save)} / yr` },
-      { label: "Indicative payback", value: `${payback.toFixed(1)} years` },
+      {
+        label: "Indicative payback",
+        value: payback > 0 ? `${payback.toFixed(1)} years` : "—",
+      },
     ],
     note: "Savings assume off-peak charging and typical evening usage. Confirmed after survey.",
     cta: "Book a free survey",
@@ -122,8 +177,11 @@ export type EvInput = {
   longRun: boolean;
 };
 /** Raw numeric figures for an EV charger config — shared by the EV tab and the bundle. */
-export function evFigures({ power, mount, smart, longRun }: EvInput) {
-  const c = CALC_CONFIG.ev;
+export function evFigures(
+  { power, mount, smart, longRun }: EvInput,
+  cfg: CalcConfig = CALC_CONFIG
+) {
+  const c = cfg.ev;
   const total =
     c.base[power] +
     (mount === 1 ? c.untetheredAdd : 0) +
@@ -131,9 +189,12 @@ export function evFigures({ power, mount, smart, longRun }: EvInput) {
     (longRun ? c.longRunAdd : 0);
   return { total };
 }
-export function ev({ power, mount, smart, longRun }: EvInput): CalcResult {
-  const c = CALC_CONFIG.ev;
-  const { total } = evFigures({ power, mount, smart, longRun });
+export function ev(
+  { power, mount, smart, longRun }: EvInput,
+  cfg: CalcConfig = CALC_CONFIG
+): CalcResult {
+  const c = cfg.ev;
+  const { total } = evFigures({ power, mount, smart, longRun }, cfg);
   return {
     priceLabel: "Fully installed from",
     price: fmt(r50(total)),
@@ -165,21 +226,24 @@ export type BundleInput = {
   batteryInput: BatteryInput;
   evInput: EvInput;
 };
-export function bundle({
-  solar: useSolar,
-  battery: useBattery,
-  ev: useEv,
-  solarInput,
-  batteryInput,
-  evInput,
-}: BundleInput): CalcResult {
-  const c = CALC_CONFIG.bundle;
+export function bundle(
+  {
+    solar: useSolar,
+    battery: useBattery,
+    ev: useEv,
+    solarInput,
+    batteryInput,
+    evInput,
+  }: BundleInput,
+  cfg: CalcConfig = CALC_CONFIG
+): CalcResult {
+  const c = cfg.bundle;
   let lo = 0;
   let hi = 0;
   let save = 0;
   const inc: string[] = [];
   if (useSolar) {
-    const f = solarFigures(solarInput);
+    const f = solarFigures(solarInput, cfg);
     lo += f.costLo;
     hi += f.costHi;
     save += f.save;
@@ -188,17 +252,17 @@ export function bundle({
   if (useBattery) {
     // Battery is "paired with solar" whenever solar is part of the bundle,
     // which boosts its annual saving.
-    const f = batteryFigures({ cap: batteryInput.cap, hasSolar: useSolar });
+    const f = batteryFigures({ cap: batteryInput.cap, hasSolar: useSolar }, cfg);
     lo += f.costLo;
     hi += f.costHi;
     save += f.save;
     inc.push(`${batteryInput.cap} kWh Battery`);
   }
   if (useEv) {
-    const f = evFigures(evInput);
+    const f = evFigures(evInput, cfg);
     lo += f.total;
     hi += f.total;
-    inc.push(`${CALC_CONFIG.ev.powerKw[evInput.power]} kW EV Charger`);
+    inc.push(`${cfg.ev.powerKw[evInput.power]} kW EV Charger`);
   }
   const nSel = [useSolar, useBattery, useEv].filter(Boolean).length;
   const disc = nSel >= c.discountMinItems ? c.discountRate : 0;

@@ -16,6 +16,7 @@ import {
   bundle,
   fmt,
   CALC_CONFIG,
+  type CalcConfig,
   type CalcResult,
 } from "@/lib/calculator";
 import {
@@ -65,7 +66,7 @@ const MIN_CALCULATOR_STATE = {
   tab: "solar" as Tab,
   beds: 0,
   orient: 0,
-  bill: 400,
+  bill: 0,
   cap: 5,
   hasSolar: false,
   evPower: 0,
@@ -178,7 +179,13 @@ function CardHeader({ tab }: { tab: Tab }) {
   );
 }
 
-export function Calculator() {
+export function Calculator({
+  config = CALC_CONFIG,
+  backgrounds = TAB_BACKGROUNDS,
+}: {
+  config?: CalcConfig;
+  backgrounds?: Record<Tab, string>;
+}) {
   const [tab, setTab] = useState<Tab>(MIN_CALCULATOR_STATE.tab);
 
   // Solar state
@@ -206,19 +213,22 @@ export function Calculator() {
   const evInput = { power: evPower, mount: evMount, smart: evSmart, longRun: evLongRun };
 
   let result: CalcResult;
-  if (tab === "solar") result = solar(solarInput);
-  else if (tab === "battery") result = battery(batteryInput);
-  else if (tab === "ev") result = ev(evInput);
+  if (tab === "solar") result = solar(solarInput, config);
+  else if (tab === "battery") result = battery(batteryInput, config);
+  else if (tab === "ev") result = ev(evInput, config);
   else
-    result = bundle({
-      solar: bSolar,
-      battery: bBattery,
-      ev: bEv,
-      // The bundle prices whatever the visitor configured on the other tabs.
-      solarInput,
-      batteryInput,
-      evInput,
-    });
+    result = bundle(
+      {
+        solar: bSolar,
+        battery: bBattery,
+        ev: bEv,
+        // The bundle prices whatever the visitor configured on the other tabs.
+        solarInput,
+        batteryInput,
+        evInput,
+      },
+      config
+    );
 
   function resetCalculator() {
     setTab(MIN_CALCULATOR_STATE.tab);
@@ -270,7 +280,7 @@ export function Calculator() {
             className={`absolute inset-0 bg-cover bg-center transition-opacity duration-700 ease-out ${
               tab === t.key ? "opacity-100" : "opacity-0"
             }`}
-            style={{ backgroundImage: `url('${TAB_BACKGROUNDS[t.key]}')` }}
+            style={{ backgroundImage: `url('${backgrounds[t.key]}')` }}
           />
         ))}
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(25,55,45,0.84)_0%,rgba(17,38,31,0.94)_100%)]" />
@@ -342,7 +352,7 @@ export function Calculator() {
                 <div className="w-full">
                   <Label>Property size</Label>
                   <Segmented
-                    options={CALC_CONFIG.solar.bedLabels as unknown as string[]}
+                    options={config.solar.bedLabels as unknown as string[]}
                     active={beds}
                     onChange={setBeds}
                   />
@@ -350,7 +360,7 @@ export function Calculator() {
                 <div className="w-full">
                   <Label>Roof orientation</Label>
                   <Segmented
-                    options={CALC_CONFIG.solar.orientLabels as unknown as string[]}
+                    options={config.solar.orientLabels as unknown as string[]}
                     active={orient}
                     onChange={setOrient}
                   />
@@ -366,7 +376,7 @@ export function Calculator() {
                   </div>
                   <input
                     type="range"
-                    min={400}
+                    min={0}
                     max={4000}
                     step={50}
                     value={bill}
@@ -465,7 +475,7 @@ export function Calculator() {
                     on={bSolar}
                     onClick={() => setBSolar((v) => !v)}
                     title="Solar Panels"
-                    desc={`${CALC_CONFIG.solar.bedKwp[beds]} kWp · ${CALC_CONFIG.solar.bedLabels[beds]} · ${CALC_CONFIG.solar.orientLabels[orient]} facing`}
+                    desc={`${config.solar.bedKwp[beds]} kWp · ${config.solar.bedLabels[beds]} · ${config.solar.orientLabels[orient]} facing`}
                   />
                   <TogglePill
                     on={bBattery}
@@ -477,7 +487,7 @@ export function Calculator() {
                     on={bEv}
                     onClick={() => setBEv((v) => !v)}
                     title="EV Charger"
-                    desc={`${CALC_CONFIG.ev.powerKw[evPower]} kW · ${evMount === 1 ? "Untethered" : "Tethered"}${evSmart ? " · smart" : ""}`}
+                    desc={`${config.ev.powerKw[evPower]} kW · ${evMount === 1 ? "Untethered" : "Tethered"}${evSmart ? " · smart" : ""}`}
                   />
                 </div>
               </div>

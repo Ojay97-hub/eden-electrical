@@ -8,13 +8,19 @@ const FEATURES = [
   { title: "Aftercare included", body: "Monitoring & O&M to keep you running." },
 ];
 
-export function About({ content }: { content: SectionContent<"about"> }) {
+export function About({
+  content,
+  photo,
+}: {
+  content: SectionContent<"about">;
+  photo: { url: string; alt: string };
+}) {
   return (
     <section id="about" className="bg-cream">
       <div className="max-w-content mx-auto px-8 py-[120px] grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-[72px] items-center">
         <img
-          src="/assets/webp-eden-electrical/solar-panels-flat-roof-garden.jpg"
-          alt="Completed solar panel installation on a flat roof"
+          src={photo.url}
+          alt={photo.alt}
           className="h-[480px] w-full object-cover rounded-[18px]"
         />
         <div>

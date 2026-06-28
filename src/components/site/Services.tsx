@@ -4,7 +4,9 @@
 import { useState } from "react";
 import { PhotoPlaceholder } from "@/components/PhotoPlaceholder";
 
+type ServiceKey = "solar" | "battery" | "ev" | "om";
 type Service = {
+  key: ServiceKey;
   title: string;
   tag: string;
   blurb: string;
@@ -14,6 +16,7 @@ type Service = {
 
 const SERVICES: Service[] = [
   {
+    key: "solar",
     title: "Solar Panel Installation",
     tag: "Design → switch-on",
     blurb:
@@ -27,6 +30,7 @@ const SERVICES: Service[] = [
     image: "/assets/webp-eden-electrical/solar-panels-closeup-sky-reflection-01.webp",
   },
   {
+    key: "battery",
     title: "Battery Storage",
     tag: "Use power on your terms",
     blurb:
@@ -40,6 +44,7 @@ const SERVICES: Service[] = [
     image: "/assets/webp-eden-electrical/foxess-inverter-battery-brick-wall-02.jpg",
   },
   {
+    key: "ev",
     title: "EV Charging",
     tag: "Smart home chargers",
     blurb:
@@ -52,6 +57,7 @@ const SERVICES: Service[] = [
     ],
   },
   {
+    key: "om",
     title: "O&M for Solar",
     tag: "On request",
     blurb:
@@ -66,7 +72,18 @@ const SERVICES: Service[] = [
   },
 ];
 
-export function Services() {
+type ServicePhoto = { url: string; alt: string };
+
+export function Services({
+  photos,
+}: {
+  photos: {
+    solar: ServicePhoto;
+    battery: ServicePhoto;
+    ev?: ServicePhoto;
+    om: ServicePhoto;
+  };
+}) {
   // Single-open accordion; first service open by default (-1 = all closed).
   const [open, setOpen] = useState(0);
 
@@ -94,6 +111,7 @@ export function Services() {
         <div className="border-b border-primary/[0.14]">
           {SERVICES.map((svc, i) => {
             const isOpen = open === i;
+            const photo = photos[svc.key];
             return (
               <div key={svc.title} className="border-t border-primary/[0.14]">
                 <button
@@ -143,10 +161,10 @@ export function Services() {
                           Estimate the cost →
                         </a>
                       </div>
-                      {svc.image ? (
+                      {photo ?? svc.image ? (
                         <img
-                          src={svc.image}
-                          alt={svc.title}
+                          src={photo?.url ?? svc.image}
+                          alt={photo?.alt || svc.title}
                           className="min-h-[240px] w-full object-cover rounded-[14px]"
                         />
                       ) : (
